@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Log } from "../../logging-middleware/logger";
+import { Log } from "../logging-middleware/logger";
 
 const api = axios.create({
   baseURL: "http://20.207.122.201/evaluation-service",

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchNotifications } from "../utils/api";
 import NotificationCard from "../components/NotificationCard";
-import { Log } from "../../logging-middleware/logger";
+import { Log } from "../logging-middleware/logger";
 import { FormControl, Select, MenuItem, Box, Typography, CircularProgress, Alert } from "@mui/material";
 import FilterListIcon from '@mui/icons-material/FilterList';
 

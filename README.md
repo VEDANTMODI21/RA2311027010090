@@ -1,307 +1,174 @@
-# 🚀 Campus Notification System (Frontend Track)
+# 🎓 Campus Notification System — Frontend Track
 
-## 📌 Overview
+> **Student:** Vedant Modi | **Roll No:** RA2311027010090 | **SRM Institute of Science and Technology**
 
-This project implements a **Campus Notification Platform** that delivers real-time updates to students regarding:
-
-* 📢 Placements
-* 📊 Results
-* 🎉 Events
-
-The system is designed with a focus on **user experience, prioritization, and observability**.
+A fully functional Campus Notification Platform built with **Next.js + Material UI**, delivering real-time placement, result, and event alerts with intelligent priority sorting and centralised logging.
 
 ---
 
-## 🎯 Key Features
+## 📁 Repository Structure
 
-### 🔥 Priority Inbox (Stage 1)
-
-* Displays **Top N (default: 10)** most important notifications
-* Priority is based on:
-
-  * **Type Weight:** Placement > Result > Event
-  * **Recency:** Latest notifications first
-
----
-
-### 📋 Notifications Page (Stage 2)
-
-* View all notifications
-* Pagination support
-* Filter by notification type:
-
-  * Event
-  * Result
-  * Placement
-
----
-
-### 📱 Responsive UI
-
-* Fully responsive design
-* Optimized for:
-
-  * Desktop 💻
-  * Mobile 📱
-
----
-
-### 👁️ Read / Unread State
-
-* Unread notifications are highlighted
-* Viewed notifications are visually muted
-
----
-
-### 🧾 Logging Middleware (MANDATORY)
-
-* Central reusable logging function:
-
-```javascript
-Log(stack, level, package, message)
 ```
-
-* Logs:
-
-  * API calls
-  * UI actions
-  * Errors
-  * State changes
-
-* Improves:
-
-  * Debugging
-  * Monitoring
-  * Traceability
-
----
-
-## 🧱 Project Structure
-
-```text
-.
-├── logging-middleware/
-├── notification_system_design.md
-├── notification_app_be/
-├── notification_app_fe/
+RA2311027010090/
+├── README.md
 ├── .gitignore
+├── logging-middleware/               # Root-level logger (reference copy)
+│   └── logger.js
+└── notification_app_fe/              # Next.js frontend application
+    ├── .env.local                    # Environment variables (not committed)
+    ├── package.json
+    ├── next.config.js
+    ├── logging-middleware/
+    │   └── logger.js                 # Reusable Log() middleware
+    ├── components/
+    │   └── NotificationCard.js       # Notification card UI component
+    ├── pages/
+    │   ├── _app.js                   # Global layout + navigation bar
+    │   ├── index.js                  # Stage 2 — All Notifications + Filter
+    │   ├── priority.js               # Stage 1 — Priority Inbox (Top N)
+    │   └── api/
+    │       └── hello.js
+    ├── utils/
+    │   ├── api.js                    # API handler (fetchNotifications)
+    │   └── priority.js               # Priority sorting logic
+    ├── styles/
+    │   └── globals.css
+    └── public/
 ```
+
+---
+
+## 🎯 Features
+
+### Stage 1 — Priority Inbox (`/priority`)
+- Fetches notifications and sorts by **type weight** then **recency**
+- Displays **Top 10** most important notifications
+- Weight mapping: `Placement (3) > Result (2) > Event (1)`
+
+### Stage 2 — All Notifications (`/`)
+- Full notification feed with **pagination** support
+- **Filter by type:** Event | Result | Placement
+- Clean empty state and error handling
+
+### Logging Middleware
+- Central `Log(stack, level, package, message)` function
+- Sends structured logs to the evaluation server
+- Integrated in: API calls, page loads, error states
+
+### UI
+- Responsive design (desktop + mobile)
+- Premium MUI card components with hover animations
+- Sticky navigation bar with page routing
 
 ---
 
 ## ⚙️ Tech Stack
 
-### Frontend
-
-* React / Next.js
-* JavaScript / TypeScript
-* Material UI
-
-### API
-
-* REST APIs (provided test server)
+| Layer       | Technology                        |
+|-------------|-----------------------------------|
+| Framework   | Next.js (Pages Router)            |
+| UI Library  | Material UI v5 + Emotion          |
+| HTTP Client | Axios                             |
+| Language    | JavaScript (ES6+)                 |
+| API         | REST — SRM Evaluation Service     |
 
 ---
 
-## 🔐 Setup Instructions
+## 🔐 Setup & Run
 
-### 1️⃣ Clone Repository
-
+### 1. Clone the repo
 ```bash
-git clone https://github.com/<your-username>/<your-roll-number>
-cd <your-roll-number>
+git clone https://github.com/VEDANTMODI21/RA2311027010090
+cd RA2311027010090
 ```
 
----
-
-### 2️⃣ Install Dependencies
-
+### 2. Install dependencies
 ```bash
 cd notification_app_fe
 npm install
 ```
 
----
-
-### 3️⃣ Environment Setup
-
-Create `.env.local` file:
-
+### 3. Configure environment
+Create `notification_app_fe/.env.local`:
 ```env
 NEXT_PUBLIC_API_TOKEN=your_access_token_here
 ```
 
----
-
-### 4️⃣ Run Application
-
+### 4. Start the development server
 ```bash
 npm run dev
 ```
-
-App will run on:
-👉 [http://localhost:3000](http://localhost:3000)
+App runs at → **http://localhost:3000**
 
 ---
 
-## 🔑 API Integration
+## 🔑 API Reference
 
-### Base URL
+**Base URL:** `http://20.207.122.201/evaluation-service`
 
-```text
-http://20.207.122.201/evaluation-service
+| Endpoint          | Method | Description               |
+|-------------------|--------|---------------------------|
+| `/notifications`  | GET    | Fetch notifications       |
+| `/logs`           | POST   | Send log entry            |
+
+**Auth Header:** `Authorization: Bearer <access_token>`
+
+**Query Parameters:**
+| Param               | Description                              |
+|---------------------|------------------------------------------|
+| `limit`             | Number of records to fetch               |
+| `page`              | Page number for pagination               |
+| `notification_type` | Filter: `Event` \| `Result` \| `Placement` |
+
+**Example:**
 ```
-
----
-
-### Authentication
-
-All requests require:
-
-```text
-Authorization: Bearer <access_token>
-```
-
----
-
-### Fetch Notifications
-
-```text
-GET /notifications
-```
-
----
-
-### Query Parameters
-
-* `limit` → number of records
-* `page` → pagination
-* `notification_type` → filter
-
-Example:
-
-```text
-/notifications?limit=10&page=1&notification_type=Event
+GET /notifications?limit=10&page=1&notification_type=Placement
 ```
 
 ---
 
 ## 🧠 Priority Logic
 
-### Weight Mapping
+```js
+const weight = { Placement: 3, Result: 2, Event: 1 };
 
-| Type      | Weight |
-| --------- | ------ |
-| Placement | 3      |
-| Result    | 2      |
-| Event     | 1      |
-
----
-
-### Sorting Strategy
-
-1. Higher weight first
-2. Latest timestamp first
+notifications.sort((a, b) => {
+  if (weight[b.Type] !== weight[a.Type])
+    return weight[b.Type] - weight[a.Type];       // Higher weight first
+  return new Date(b.Timestamp) - new Date(a.Timestamp); // Newer first
+}).slice(0, 10);
+```
 
 ---
 
-### Output
+## 🧾 Logging Middleware
 
-Top N notifications (default: 10)
+```js
+// logging-middleware/logger.js
+export const Log = async (stack, level, pkg, message) => {
+  await axios.post("/logs", { stack, level, package: pkg, message }, { headers });
+};
 
----
+// Usage
+Log("frontend", "info",  "api",  "Fetching notifications");
+Log("frontend", "error", "page", "Failed to load");
+```
 
-## 📦 Core Modules
-
-### 📁 logging-middleware/
-
-* Reusable logging function
-* Sends logs to server
-
----
-
-### 📁 notification_app_fe/
-
-#### Pages
-
-* `/` → All Notifications
-* `/priority` → Priority Inbox
-
-#### Components
-
-* NotificationCard
-
-#### Utilities
-
-* API handler
-* Priority logic
+Integrated in every API call, page load, and error handler.
 
 ---
 
-## 📸 Screenshots (Included)
+## 📏 Coding Standards
 
-* Desktop view
-* Mobile view
-* Priority notifications
-* Filtering functionality
-* API responses
-
----
-
-## 🎥 Demo Video (Included)
-
-Demonstrates:
-
-* Navigation between pages
-* Filtering
-* Priority logic
-* Responsive design
-
----
-
-## 📏 Coding Practices
-
-* Modular architecture
-* Reusable components
-* Clean folder structure
-* Proper naming conventions
-* Error handling
-* API abstraction
-
----
-
-## ⚠️ Important Notes
-
-* Logging middleware integrated from the first function
-* No external algorithm libraries used
-* No hardcoding of data
-* Fully original implementation
-* Regular commits maintained
-
----
-
-## 📊 Performance Considerations
-
-* Efficient priority sorting
-* Optimized API usage with query params
-* Minimal re-renders using React best practices
-
----
-
-## ✅ Conclusion
-
-This project demonstrates:
-
-* Frontend engineering skills
-* API integration
-* System design thinking
-* Clean and scalable architecture
-* Real-world problem solving
+- ✅ Modular architecture — each file has a single responsibility
+- ✅ No hardcoded data — all content from API
+- ✅ No external algorithm libraries — priority logic implemented from scratch
+- ✅ Error handling on every API call
+- ✅ Logging middleware used from the first function call
+- ✅ Regular Git commits
 
 ---
 
 ## 📬 Contact
 
-For any queries, feel free to reach out.
-
----
+**Vedant Modi** — vm2214@srmist.edu.in
