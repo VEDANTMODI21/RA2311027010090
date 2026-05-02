@@ -1,28 +1,42 @@
 import axios from "axios";
 import { Log } from "../logging-middleware/logger";
 
-const api = axios.create({
-  baseURL: "http://20.207.122.201/evaluation-service",
-  headers: {
-    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`
-  }
-});
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://20.207.122.201/evaluation-service";
 
-// Use interceptors to ensure we always have the latest token if it changes (though here it's static)
-api.interceptors.request.use((config) => {
-  config.headers.Authorization = `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`;
-  return config;
-});
+/**
+ * Retrieves a valid Bearer token from our server-side API route.
+ * This keeps credentials off the client entirely.
+ */
+const getToken = async () => {
+  const res = await axios.get("/api/token");
+  return res.data.access_token;
+};
 
+/**
+ * Fetches notifications from the evaluation API via the server-side proxy.
+ * Supports limit, page, and notification_type query params.
+ */
 export const fetchNotifications = async (params = {}) => {
   try {
-    Log("frontend", "info", "api", "Fetching notifications");
+    Log("frontend", "INFO", "api", `fetchNotifications called with params: ${JSON.stringify(params)}`);
 
-    const res = await api.get("/notifications", { params });
+    const token = await getToken();
 
-    return res.data.notifications;
+    // Remove empty params
+    const cleanParams = Object.fromEntries(
+      Object.entries(params).filter(([, v]) => v !== "" && v !== undefined && v !== null)
+    );
+
+    const res = await axios.get(`${BASE_URL}/notifications`, {
+      headers: { Authorization: `Bearer ${token}` },
+      params: cleanParams,
+    });
+
+    const notifications = res.data.notifications || [];
+    Log("frontend", "INFO", "api", `Received ${notifications.length} notifications`);
+    return notifications;
   } catch (err) {
-    Log("frontend", "error", "api", err.message);
+    Log("frontend", "ERROR", "api", `fetchNotifications failed: ${err.message}`);
     throw err;
   }
 };

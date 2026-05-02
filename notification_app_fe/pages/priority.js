@@ -2,56 +2,95 @@ import { useEffect, useState } from "react";
 import { fetchNotifications } from "../utils/api";
 import { getTopNotifications } from "../utils/priority";
 import NotificationCard from "../components/NotificationCard";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import { Log } from "../logging-middleware/logger";
+import {
+  Box, Typography, CircularProgress, Alert,
+  Slider, Stack
+} from "@mui/material";
 
 export default function Priority() {
   const [data, setData] = useState([]);
+  const [n, setN] = useState(10);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
+
     fetchNotifications({ limit: 50, page: 1 })
       .then((res) => {
-        const top = getTopNotifications(res || [], 10);
+        const top = getTopNotifications(res, n);
         setData(top);
+        Log("frontend", "INFO", "page/priority", `Priority inbox loaded — showing top ${n}`);
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
-        setError(true);
+        Log("frontend", "ERROR", "page/priority", err.message);
+        setError("Failed to load priority notifications.");
         setLoading(false);
       });
-  }, []);
+  }, [n]);
 
   return (
     <Box>
+      {/* Header */}
       <Box mb={4}>
-        <Box display="flex" alignItems="center" gap={1} mb={1}>
-          <LocalFireDepartmentIcon color="error" fontSize="large" />
-          <Typography variant="h4" fontWeight="800">
-            Priority Inbox
-          </Typography>
-        </Box>
+        <Typography variant="h4" fontWeight={800} gutterBottom>
+          Priority Inbox
+        </Typography>
         <Typography variant="body1" color="text.secondary">
-          Your most important updates, intelligently sorted for you.
+          Top {n} notifications ranked by importance (Placement &gt; Result &gt; Event) and recency.
         </Typography>
       </Box>
 
+      {/* N slider */}
+      <Box mb={4} maxWidth={400}>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Typography variant="body2" color="text.secondary" noWrap>
+            Show top:
+          </Typography>
+          <Slider
+            value={n}
+            min={5}
+            max={20}
+            step={5}
+            marks
+            valueLabelDisplay="auto"
+            onChange={(_, v) => setN(v)}
+            sx={{ flexGrow: 1 }}
+          />
+          <Typography variant="body2" fontWeight={700} sx={{ minWidth: 30 }}>
+            {n}
+          </Typography>
+        </Stack>
+      </Box>
+
+      {/* Legend */}
+      <Box mb={3} display="flex" gap={2} flexWrap="wrap">
+        {[["Placement", "success", "Weight: 3"], ["Result", "info", "Weight: 2"], ["Event", "warning", "Weight: 1"]].map(([label, , hint]) => (
+          <Box key={label} display="flex" alignItems="center" gap={0.5}>
+            <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: label === "Placement" ? "#2e7d32" : label === "Result" ? "#0288d1" : "#f57c00" }} />
+            <Typography variant="caption" color="text.secondary">{label} ({hint})</Typography>
+          </Box>
+        ))}
+      </Box>
+
+      {/* Content */}
       {loading ? (
-        <Box display="flex" justifyContent="center" mt={10}><CircularProgress size={60} thickness={4} /></Box>
+        <Box display="flex" justifyContent="center" mt={10}>
+          <CircularProgress size={52} thickness={4} />
+        </Box>
       ) : error ? (
-        <Alert severity="error" sx={{ borderRadius: 2 }}>Failed to load notifications. Please check your API token.</Alert>
+        <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>
       ) : data.length === 0 ? (
-        <Box textAlign="center" mt={10} p={5} bgcolor="rgba(0,0,0,0.02)" borderRadius={4}>
-          <Typography variant="h6" color="text.secondary">No priority notifications right now.</Typography>
+        <Box textAlign="center" mt={8} p={6} bgcolor="#f5f5f5" borderRadius={4}>
+          <Typography variant="h6" color="text.secondary">No notifications available.</Typography>
         </Box>
       ) : (
-        <Box>
-          {data.map((n) => (
-            <NotificationCard key={n.ID} item={n} />
-          ))}
-        </Box>
+        data.map((n) => (
+          <NotificationCard key={n.ID} item={n} />
+        ))
       )}
     </Box>
   );

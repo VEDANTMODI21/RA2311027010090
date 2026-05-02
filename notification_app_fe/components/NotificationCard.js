@@ -1,57 +1,69 @@
+import { useState } from "react";
 import { Card, CardContent, Typography, Box, Chip } from "@mui/material";
-import CampaignIcon from "@mui/icons-material/Campaign";
-import EventIcon from "@mui/icons-material/Event";
-import SchoolIcon from "@mui/icons-material/School";
 
-const getIcon = (type) => {
-  switch (type) {
-    case "Placement": return <SchoolIcon fontSize="small" />;
-    case "Result": return <CampaignIcon fontSize="small" />;
-    case "Event": return <EventIcon fontSize="small" />;
-    default: return null;
-  }
-};
-
-const getColor = (type) => {
-  switch (type) {
-    case "Placement": return "success";
-    case "Result": return "info";
-    case "Event": return "warning";
-    default: return "default";
-  }
+const TYPE_COLOR = {
+  Placement: "success",
+  Result: "info",
+  Event: "warning",
 };
 
 export default function NotificationCard({ item }) {
+  const [read, setRead] = useState(false);
+
   return (
-    <Card sx={{ 
-      mb: 3, 
-      borderRadius: 3, 
-      boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
-      border: "1px solid rgba(0,0,0,0.04)",
-      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-      "&:hover": { 
-        transform: "translateY(-6px)", 
-        boxShadow: "0 12px 32px rgba(0,0,0,0.12)",
-        borderColor: "primary.main" 
-      }
-    }}>
+    <Card
+      onClick={() => setRead(true)}
+      sx={{
+        mb: 2.5,
+        borderRadius: 3,
+        cursor: "pointer",
+        border: read ? "1.5px solid #e0e0e0" : "1.5px solid #1976d2",
+        backgroundColor: read ? "#fafafa" : "#ffffff",
+        opacity: read ? 0.75 : 1,
+        boxShadow: read
+          ? "0 2px 8px rgba(0,0,0,0.04)"
+          : "0 6px 20px rgba(25,118,210,0.10)",
+        transition: "all 0.25s ease",
+        "&:hover": {
+          transform: "translateY(-3px)",
+          boxShadow: "0 10px 28px rgba(0,0,0,0.10)",
+          opacity: 1,
+        },
+      }}
+    >
       <CardContent sx={{ p: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-          <Chip 
-            icon={getIcon(item.Type)} 
-            label={item.Type} 
-            color={getColor(item.Type)} 
-            size="medium" 
-            variant="filled" 
-            sx={{ fontWeight: "600", letterSpacing: "0.5px" }}
-          />
-          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-            {new Date(item.Timestamp).toLocaleString('en-US', {
-              month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5} flexWrap="wrap" gap={1}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <Chip
+              label={item.Type}
+              color={TYPE_COLOR[item.Type] || "default"}
+              size="small"
+              sx={{ fontWeight: 700, fontSize: "0.7rem", letterSpacing: "0.4px" }}
+            />
+            {!read && (
+              <Chip
+                label="New"
+                size="small"
+                sx={{ bgcolor: "#1976d2", color: "#fff", fontWeight: 700, fontSize: "0.65rem" }}
+              />
+            )}
+          </Box>
+          <Typography variant="caption" color="text.secondary" fontWeight={500}>
+            {new Date(item.Timestamp).toLocaleString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
             })}
           </Typography>
         </Box>
-        <Typography variant="h6" sx={{ mt: 1, mb: 1, color: "text.primary", fontWeight: 700, lineHeight: 1.4 }}>
+        <Typography
+          variant="body1"
+          fontWeight={read ? 400 : 600}
+          color={read ? "text.secondary" : "text.primary"}
+          sx={{ lineHeight: 1.5 }}
+        >
           {item.Message}
         </Typography>
       </CardContent>
