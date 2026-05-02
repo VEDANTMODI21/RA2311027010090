@@ -18,7 +18,7 @@ const fetchAllNotifications = async () => {
   const token = await getToken();
   let all = [];
   let page = 1;
-  const limit = 50;
+  const limit = 10;
 
   while (true) {
     log("backend", "INFO", "priority", `Fetching page ${page}`);
@@ -32,6 +32,7 @@ const fetchAllNotifications = async () => {
     all = all.concat(notifications);
     if (notifications.length < limit) break;
     page++;
+    await new Promise(r => setTimeout(r, 100)); // Small delay to avoid rate limiting
   }
 
   return all;
