@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchNotifications } from "../utils/api";
-import { getTopNotifications } from "../utils/priority";
 import NotificationCard from "../components/NotificationCard";
+import axios from "axios";
 import { Log } from "../logging-middleware/logger";
 import {
   Box, Typography, CircularProgress, Alert,
@@ -18,16 +17,15 @@ export default function Priority() {
     setLoading(true);
     setError(null);
 
-    fetchNotifications({ limit: 50, page: 1 })
+    axios.get(`http://localhost:3001/priority?n=${n}`)
       .then((res) => {
-        const top = getTopNotifications(res, n);
-        setData(top);
-        Log("frontend", "INFO", "page/priority", `Priority inbox loaded — showing top ${n}`);
+        setData(res.data.notifications || []);
+        Log("frontend", "INFO", "page/priority", `Priority inbox loaded — showing top ${n} from backend`);
         setLoading(false);
       })
       .catch((err) => {
         Log("frontend", "ERROR", "page/priority", err.message);
-        setError("Failed to load priority notifications.");
+        setError("Failed to load priority notifications from backend (Make sure localhost:3001 is running).");
         setLoading(false);
       });
   }, [n]);
