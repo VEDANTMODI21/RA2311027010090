@@ -12,6 +12,16 @@ A full-stack Campus Notification Platform that delivers real-time updates on Pla
 
 ---
 
+## ⚡ Quick Start (All-in-One)
+
+Start both services with one command from the root:
+
+```bash
+npm run dev:all
+```
+
+---
+
 ## Repository Structure
 
 ```
