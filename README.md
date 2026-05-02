@@ -1,7 +1,5 @@
 # Campus Notification System
 
-**Student:** Vedant Modi
-**Roll No:** RA2311027010090
 **Institution:** SRM Institute of Science and Technology
 
 ---
@@ -73,14 +71,14 @@ cd notification_app_be
 npm install
 ```
 
-Create `.env`:
+Create `.env` (see `.env.example` for the required keys — do not commit real values):
 ```
-EMAIL=vm2214@srmist.edu.in
-NAME=vedant modi
-ROLL_NO=ra2311027010090
-ACCESS_CODE=QkbpxH
-CLIENT_ID=b8096e87-d1e3-426d-ac84-fabc2a534b96
-CLIENT_SECRET=MCTgRQKPHfMBwHsh
+EMAIL=your_email@srmist.edu.in
+NAME=your_name
+ROLL_NO=your_roll_number
+ACCESS_CODE=your_access_code
+CLIENT_ID=your_client_id
+CLIENT_SECRET=your_client_secret
 BASE_URL=http://20.207.122.201/evaluation-service
 PORT=3001
 ```
@@ -116,14 +114,14 @@ cd notification_app_fe
 npm install
 ```
 
-Create `.env.local`:
+Create `.env.local` (see `.env.example` for the required keys — do not commit real values):
 ```
-EMAIL=vm2214@srmist.edu.in
-NAME=vedant modi
-ROLL_NO=ra2311027010090
-ACCESS_CODE=QkbpxH
-CLIENT_ID=b8096e87-d1e3-426d-ac84-fabc2a534b96
-CLIENT_SECRET=MCTgRQKPHfMBwHsh
+EMAIL=your_email@srmist.edu.in
+NAME=your_name
+ROLL_NO=your_roll_number
+ACCESS_CODE=your_access_code
+CLIENT_ID=your_client_id
+CLIENT_SECRET=your_client_secret
 NEXT_PUBLIC_BASE_URL=http://20.207.122.201/evaluation-service
 ```
 
@@ -201,8 +199,3 @@ Logs are sent to the evaluation service on every API call, page load, and error 
 - Logging middleware called on every operation
 - Credentials never exposed to the client
 
----
-
-## Contact
-
-Vedant Modi — vm2214@srmist.edu.in
