@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import NotificationCard from "../components/NotificationCard";
 import axios from "axios";
+import NotificationCard from "../components/NotificationCard";
 import { Log } from "../logging-middleware/logger";
 import {
   Box, Typography, CircularProgress, Alert,
-  Slider, Stack
+  Slider, Stack, Button, Grid
 } from "@mui/material";
 
 export default function Priority() {
@@ -13,7 +13,7 @@ export default function Priority() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const loadData = () => {
     setLoading(true);
     setError(null);
 
@@ -28,6 +28,10 @@ export default function Priority() {
         setError("Failed to load priority notifications from backend (Make sure localhost:3001 is running).");
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    loadData();
   }, [n]);
 
   return (
@@ -80,15 +84,29 @@ export default function Priority() {
           <CircularProgress size={52} thickness={4} />
         </Box>
       ) : error ? (
-        <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>
+        <Alert
+          severity="error"
+          sx={{ borderRadius: 2 }}
+          action={
+            <Button color="inherit" size="small" onClick={loadData}>
+              RETRY
+            </Button>
+          }
+        >
+          {error}
+        </Alert>
       ) : data.length === 0 ? (
         <Box textAlign="center" mt={8} p={6} bgcolor="#f5f5f5" borderRadius={4}>
           <Typography variant="h6" color="text.secondary">No notifications available.</Typography>
         </Box>
       ) : (
-        data.map((n) => (
-          <NotificationCard key={n.ID} item={n} />
-        ))
+        <Grid container spacing={3}>
+          {data.map((item) => (
+            <Grid item xs={12} sm={6} md={4} key={item.ID}>
+              <NotificationCard item={item} />
+            </Grid>
+          ))}
+        </Grid>
       )}
     </Box>
   );

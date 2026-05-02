@@ -81,7 +81,7 @@ ROLL_NO=your_roll_no
 ACCESS_CODE=your_access_code
 CLIENT_ID=your_client_id
 CLIENT_SECRET=your_client_secret
-BASE_URL=http://20.244.56.144/evaluation-service
+BASE_URL=http://20.207.122.201/evaluation-service
 PORT=3001
 ```
 
@@ -124,7 +124,7 @@ ROLL_NO=your_roll_no
 ACCESS_CODE=your_access_code
 CLIENT_ID=your_client_id
 CLIENT_SECRET=your_client_secret
-NEXT_PUBLIC_BASE_URL=http://20.244.56.144/evaluation-service
+NEXT_PUBLIC_BASE_URL=http://20.207.122.201/evaluation-service
 ```
 
 ```bash
@@ -141,7 +141,7 @@ Routes:
 
 ## API Reference
 
-**Base URL:** `http://20.244.56.144/evaluation-service`
+**Base URL:** `http://20.207.122.201/evaluation-service`
 
 | Endpoint       | Method | Description                        |
 |----------------|--------|------------------------------------|

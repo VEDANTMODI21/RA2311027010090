@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Card, CardContent, Typography, Box, Chip } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Card, CardContent, Typography, Box, Chip, Badge } from "@mui/material";
 
 const TYPE_COLOR = {
   Placement: "success",
@@ -8,65 +8,80 @@ const TYPE_COLOR = {
 };
 
 export default function NotificationCard({ item }) {
-  const [read, setRead] = useState(false);
+  const [read, setRead] = useState(true);
+
+  useEffect(() => {
+    const viewedIds = JSON.parse(localStorage.getItem("viewedNotificationIds") || "[]");
+    if (!viewedIds.includes(item.ID)) {
+      setRead(false);
+    }
+  }, [item.ID]);
+
+  const handleMarkRead = () => {
+    if (!read) {
+      setRead(true);
+      const viewedIds = JSON.parse(localStorage.getItem("viewedNotificationIds") || "[]");
+      if (!viewedIds.includes(item.ID)) {
+        viewedIds.push(item.ID);
+        localStorage.setItem("viewedNotificationIds", JSON.stringify(viewedIds));
+      }
+    }
+  };
 
   return (
-    <Card
-      onClick={() => setRead(true)}
-      sx={{
-        mb: 2.5,
-        borderRadius: 3,
-        cursor: "pointer",
-        border: read ? "1.5px solid #e0e0e0" : "1.5px solid #1976d2",
-        backgroundColor: read ? "#fafafa" : "#ffffff",
-        opacity: read ? 0.75 : 1,
-        boxShadow: read
-          ? "0 2px 8px rgba(0,0,0,0.04)"
-          : "0 6px 20px rgba(25,118,210,0.10)",
-        transition: "all 0.25s ease",
-        "&:hover": {
-          transform: "translateY(-3px)",
-          boxShadow: "0 10px 28px rgba(0,0,0,0.10)",
-          opacity: 1,
-        },
-      }}
+    <Badge
+      color="error"
+      variant="dot"
+      invisible={read}
+      sx={{ width: "100%", mb: 2.5, "& .MuiBadge-badge": { right: 10, top: 10, transform: "scale(1.2)" } }}
     >
-      <CardContent sx={{ p: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5} flexWrap="wrap" gap={1}>
-          <Box display="flex" alignItems="center" gap={1}>
+      <Card
+        onClick={handleMarkRead}
+        sx={{
+          width: "100%",
+          borderRadius: 3,
+          cursor: "pointer",
+          borderLeft: read ? "4px solid transparent" : "4px solid #1976d2",
+          border: "1px solid #e0e0e0",
+          backgroundColor: read ? "#fafafa" : "#ffffff",
+          boxShadow: read
+            ? "0 2px 8px rgba(0,0,0,0.04)"
+            : "0 4px 14px rgba(25,118,210,0.08)",
+          transition: "all 0.2s ease",
+          "&:hover": {
+            transform: "translateY(-2px)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+          },
+        }}
+      >
+        <CardContent sx={{ p: 3 }}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5} flexWrap="wrap" gap={1}>
             <Chip
               label={item.Type}
               color={TYPE_COLOR[item.Type] || "default"}
               size="small"
               sx={{ fontWeight: 700, fontSize: "0.7rem", letterSpacing: "0.4px" }}
             />
-            {!read && (
-              <Chip
-                label="New"
-                size="small"
-                sx={{ bgcolor: "#1976d2", color: "#fff", fontWeight: 700, fontSize: "0.65rem" }}
-              />
-            )}
+            <Typography variant="caption" color="text.secondary" fontWeight={500}>
+              {new Date(item.Timestamp).toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </Typography>
           </Box>
-          <Typography variant="caption" color="text.secondary" fontWeight={500}>
-            {new Date(item.Timestamp).toLocaleString("en-IN", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+          <Typography
+            variant="body1"
+            fontWeight={read ? 400 : 600}
+            color={read ? "text.secondary" : "text.primary"}
+            sx={{ lineHeight: 1.5 }}
+          >
+            {item.Message}
           </Typography>
-        </Box>
-        <Typography
-          variant="body1"
-          fontWeight={read ? 400 : 600}
-          color={read ? "text.secondary" : "text.primary"}
-          sx={{ lineHeight: 1.5 }}
-        >
-          {item.Message}
-        </Typography>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Badge>
   );
 }

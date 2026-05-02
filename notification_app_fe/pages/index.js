@@ -4,7 +4,8 @@ import NotificationCard from "../components/NotificationCard";
 import { Log } from "../logging-middleware/logger";
 import {
   Box, Typography, CircularProgress, Alert,
-  FormControl, Select, MenuItem, InputLabel, Pagination
+  FormControl, Select, MenuItem, InputLabel, Pagination,
+  Button, Grid
 } from "@mui/material";
 
 const TYPES = ["Event", "Result", "Placement"];
@@ -17,7 +18,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const loadData = () => {
     setLoading(true);
     setError(null);
 
@@ -35,12 +36,11 @@ export default function Home() {
         setError("Failed to load notifications. Please check your connection.");
         setLoading(false);
       });
-  }, [type, page]);
-
-  const handleTypeChange = (e) => {
-    setType(e.target.value);
-    setPage(1);
   };
+
+  useEffect(() => {
+    loadData();
+  }, [type, page]);
 
   return (
     <Box>
@@ -58,7 +58,7 @@ export default function Home() {
       <Box mb={3} display="flex" alignItems="center" gap={2}>
         <FormControl size="small" sx={{ minWidth: 200 }}>
           <InputLabel>Filter by Type</InputLabel>
-          <Select value={type} label="Filter by Type" onChange={handleTypeChange}>
+          <Select value={type} label="Filter by Type" onChange={(e) => { setType(e.target.value); setPage(1); }}>
             <MenuItem value="">All Types</MenuItem>
             {TYPES.map((t) => (
               <MenuItem key={t} value={t}>{t}</MenuItem>
@@ -78,16 +78,30 @@ export default function Home() {
           <CircularProgress size={52} thickness={4} />
         </Box>
       ) : error ? (
-        <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>
+        <Alert
+          severity="error"
+          sx={{ borderRadius: 2 }}
+          action={
+            <Button color="inherit" size="small" onClick={loadData}>
+              RETRY
+            </Button>
+          }
+        >
+          {error}
+        </Alert>
       ) : data.length === 0 ? (
         <Box textAlign="center" mt={8} p={6} bgcolor="#f5f5f5" borderRadius={4}>
           <Typography variant="h6" color="text.secondary">No notifications found.</Typography>
         </Box>
       ) : (
         <>
-          {data.map((n) => (
-            <NotificationCard key={n.ID} item={n} />
-          ))}
+          <Grid container spacing={3}>
+            {data.map((n) => (
+              <Grid item xs={12} sm={6} md={4} key={n.ID}>
+                <NotificationCard item={n} />
+              </Grid>
+            ))}
+          </Grid>
           <Box display="flex" justifyContent="center" mt={4}>
             <Pagination
               count={10}
