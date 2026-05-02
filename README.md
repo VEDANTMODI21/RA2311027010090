@@ -1,5 +1,7 @@
 # Campus Notification System
 
+**Student:** Vedant Modi
+**Roll No:** RA2311027010090
 **Institution:** SRM Institute of Science and Technology
 
 ---
@@ -71,11 +73,11 @@ cd notification_app_be
 npm install
 ```
 
-Create `.env` (see `.env.example` for the required keys — do not commit real values):
+Create `.env`:
 ```
 EMAIL=your_email@srmist.edu.in
 NAME=your_name
-ROLL_NO=your_roll_number
+ROLL_NO=your_roll_no
 ACCESS_CODE=your_access_code
 CLIENT_ID=your_client_id
 CLIENT_SECRET=your_client_secret
@@ -114,11 +116,11 @@ cd notification_app_fe
 npm install
 ```
 
-Create `.env.local` (see `.env.example` for the required keys — do not commit real values):
+Create `.env.local`:
 ```
 EMAIL=your_email@srmist.edu.in
 NAME=your_name
-ROLL_NO=your_roll_number
+ROLL_NO=your_roll_no
 ACCESS_CODE=your_access_code
 CLIENT_ID=your_client_id
 CLIENT_SECRET=your_client_secret
@@ -199,3 +201,8 @@ Logs are sent to the evaluation service on every API call, page load, and error 
 - Logging middleware called on every operation
 - Credentials never exposed to the client
 
+---
+
+## Contact
+
+Vedant Modi — vm2214@srmist.edu.in
