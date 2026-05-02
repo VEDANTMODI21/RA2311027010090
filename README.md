@@ -203,6 +203,10 @@ Logs are sent to the evaluation service on every API call, page load, and error 
 
 ---
 
+## SS
+![Stage-1](image.png)
+![Stage-2](image-1.png)
+
 ## Contact
 
 Vedant Modi — vm2214@srmist.edu.in
