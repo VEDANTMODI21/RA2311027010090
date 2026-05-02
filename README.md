@@ -203,9 +203,13 @@ Logs are sent to the evaluation service on every API call, page load, and error 
 
 ---
 
-## SS
-![Stage-1](image.png)
-![Stage-2](image-1.png)
+## Screenshots
+
+### Stage 1 — Priority Inbox
+![Stage 1](image.png)
+
+### Stage 2 — Frontend Application
+![Stage 2](image-1.png)
 
 ## Contact
 
